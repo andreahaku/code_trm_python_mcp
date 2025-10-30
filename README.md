@@ -301,6 +301,141 @@ Iteration stops when:
 2. **Plateau**: No improvement for `patience` consecutive steps
 3. **Limit**: Reached `maxSteps`
 
+## 💬 Example Usage
+
+Once configured as an MCP server in your LLM client, you can use natural language prompts:
+
+### Starting a TRM Session
+
+**Prompt:** "Start a TRM session on my data analysis project at /Users/me/projects/data-pipeline. Use pytest for tests, flake8 and mypy for linting, and run data validation with `python scripts/validate_schemas.py`. Set max steps to 10 and stop when score reaches 0.95."
+
+This will invoke the `trm.start` tool to:
+- Initialize session on the specified project
+- Configure evaluation commands for data quality, tests, and lint
+- Set halting policy (maxSteps=10, threshold=0.95)
+- Return session ID for subsequent operations
+
+### Iterative Improvement
+
+**Prompt:** "Submit a candidate that fixes the missing value handling in src/preprocessing.py. The issue is on lines 45-50 where we need to add fillna() for the 'age' column."
+
+This will:
+- Apply the proposed changes to the file
+- Run full evaluation pipeline (data quality, tests, lint, perf)
+- Calculate weighted score
+- Return feedback on what passed/failed
+- Suggest whether to continue or halt
+
+**Prompt:** "What's the current state of the TRM session? Show me the score and whether we should stop iterating."
+
+Uses `trm.state` and `trm.halt` tools to:
+- Display current step, EMA score, best score
+- Show halting decision and reasons
+- Provide improvement streak information
+
+### Working with Files
+
+**Prompt:** "Read the contents of src/pipeline.py and data/schemas.py so I can see what needs to be fixed."
+
+Uses `trm.read` tool to:
+- Fetch file contents from the repository
+- Show metadata (line count, size, last modified)
+- Provide context for making informed changes
+
+**Prompt:** "Show me lines 100-120 of src/analysis.py where the error occurred."
+
+Uses `trm.lines` tool to:
+- Read specific line range with line numbers
+- Provide focused context around error location
+- Save tokens compared to reading entire file
+
+### Getting Help
+
+**Prompt:** "The tests are failing with a NameError. Can you suggest a fix?"
+
+Uses `trm.fix` tool to:
+- Analyze Python error traceback
+- Identify the specific error (NameError: 'pandas' is not defined)
+- Generate fix candidate (add `import pandas as pd`)
+- Provide ready-to-apply candidate with rationale
+
+**Prompt:** "What improvements should I focus on based on the evaluation results?"
+
+Uses `trm.suggest` tool to:
+- Analyze evaluation feedback
+- Prioritize issues (critical → high → medium → low)
+- Generate actionable suggestions
+- Consider code quality, test coverage, performance
+
+### Code Review
+
+**Prompt:** "Review the PR at https://github.com/user/repo/pull/123 and check for data validation issues, missing tests, and type safety problems."
+
+Uses `trm.review` tool to:
+- Fetch PR diff from GitHub
+- Analyze code changes
+- Check for common issues (missing type hints, no error handling, etc.)
+- Provide detailed comments with suggestions
+- Give overall assessment (approved/needs-changes/comments)
+
+### Checkpoints and Undo
+
+**Prompt:** "Save the current state as a checkpoint called 'before-refactoring'."
+
+Uses `trm.save` tool to save session state for later restoration.
+
+**Prompt:** "That last change made things worse. Undo it and restore the previous state."
+
+Uses `trm.undo` tool to:
+- Restore files to previous state
+- Roll back step counter
+- Recalculate scores and EMA
+- Show what was restored
+
+### Example Complete Session
+
+**Prompt:** "Let's improve the data validation in my pandas project. Start a TRM session at /path/to/project with these settings:
+- Data validation: python scripts/check_schemas.py
+- Tests: pytest --json tests/
+- Lint: flake8 src/ && mypy src/
+- Performance: python scripts/benchmark_pipeline.py
+- Stop after 12 steps or when score reaches 0.97"
+
+**Response:** ✅ Session started with ID abc-123...
+
+**Prompt:** "Read src/validators.py so I can see what needs to be improved."
+
+**Response:** [Shows file contents with 250 lines]
+
+**Prompt:** "Submit a candidate that adds schema validation for the 'transactions' DataFrame. It should check that required columns exist and have correct dtypes."
+
+**Response:**
+- Step 1/12
+- Score: 0.65
+- Tests: 45/50 passed (5 failed)
+- Data quality: ❌ Failed (schema mismatch detected)
+- Feedback: Add validation for 'amount' column dtype
+
+**Prompt:** "Fix the schema validation based on that feedback."
+
+**Response:**
+- Step 2/12
+- Score: 0.82
+- Tests: 48/50 passed (2 failed)
+- Data quality: ✅ Passed
+- Feedback: Remaining test failures in edge cases
+
+**Prompt:** "Keep iterating until tests pass or we should halt."
+
+[System continues iterating with LLM proposals...]
+
+**Response:**
+- Step 5/12
+- Score: 0.96
+- Tests: 50/50 passed ✅
+- Data quality: ✅ Passed
+- Should Halt: Yes - Success! Tests passing and score >= threshold
+
 ## 🎯 Recommended Workflow
 
 ### 1. Start Session
