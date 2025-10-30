@@ -106,7 +106,7 @@ Once configured as an MCP server in your LLM client, you can use natural languag
 
 ### Starting a TRM Session
 
-**Prompt:** "Start a TRM session on my data analysis project at /Users/me/projects/data-pipeline. Use pytest for tests, flake8 and mypy for linting, and run data validation with `python scripts/validate_schemas.py`. Set max steps to 10 and stop when score reaches 0.95."
+**Prompt:** *"Start a TRM session on my data analysis project at /Users/me/projects/data-pipeline. Use pytest for tests, flake8 and mypy for linting, and run data validation with `python scripts/validate_schemas.py`. Set max steps to 10 and stop when score reaches 0.95."*
 
 This will invoke the `trm.start` tool to:
 - Initialize session on the specified project
@@ -116,7 +116,7 @@ This will invoke the `trm.start` tool to:
 
 ### Iterative Improvement
 
-**Prompt:** "Submit a candidate that fixes the missing value handling in src/preprocessing.py. The issue is on lines 45-50 where we need to add fillna() for the 'age' column."
+**Prompt:** *"Submit a candidate that fixes the missing value handling in src/preprocessing.py. The issue is on lines 45-50 where we need to add fillna() for the 'age' column."*
 
 This will:
 - Apply the proposed changes to the file
@@ -125,7 +125,7 @@ This will:
 - Return feedback on what passed/failed
 - Suggest whether to continue or halt
 
-**Prompt:** "What's the current state of the TRM session? Show me the score and whether we should stop iterating."
+**Prompt:** *"What's the current state of the TRM session? Show me the score and whether we should stop iterating."*
 
 Uses `trm.state` and `trm.halt` tools to:
 - Display current step, EMA score, best score
@@ -134,14 +134,14 @@ Uses `trm.state` and `trm.halt` tools to:
 
 ### Working with Files
 
-**Prompt:** "Read the contents of src/pipeline.py and data/schemas.py so I can see what needs to be fixed."
+**Prompt:** *"Read the contents of src/pipeline.py and data/schemas.py so I can see what needs to be fixed."*
 
 Uses `trm.read` tool to:
 - Fetch file contents from the repository
 - Show metadata (line count, size, last modified)
 - Provide context for making informed changes
 
-**Prompt:** "Show me lines 100-120 of src/analysis.py where the error occurred."
+**Prompt:** *"Show me lines 100-120 of src/analysis.py where the error occurred."*
 
 Uses `trm.lines` tool to:
 - Read specific line range with line numbers
@@ -150,7 +150,7 @@ Uses `trm.lines` tool to:
 
 ### Getting Help
 
-**Prompt:** "The tests are failing with a NameError. Can you suggest a fix?"
+**Prompt:** *"The tests are failing with a NameError. Can you suggest a fix?"*
 
 Uses `trm.fix` tool to:
 - Analyze Python error traceback
@@ -158,7 +158,7 @@ Uses `trm.fix` tool to:
 - Generate fix candidate (add `import pandas as pd`)
 - Provide ready-to-apply candidate with rationale
 
-**Prompt:** "What improvements should I focus on based on the evaluation results?"
+**Prompt:** *"What improvements should I focus on based on the evaluation results?"*
 
 Uses `trm.suggest` tool to:
 - Analyze evaluation feedback
@@ -168,7 +168,7 @@ Uses `trm.suggest` tool to:
 
 ### Code Review
 
-**Prompt:** "Review the PR at https://github.com/user/repo/pull/123 and check for data validation issues, missing tests, and type safety problems."
+**Prompt:** *"Review the PR at https://github.com/user/repo/pull/123 and check for data validation issues, missing tests, and type safety problems."*
 
 Uses `trm.review` tool to:
 - Fetch PR diff from GitHub
@@ -179,11 +179,11 @@ Uses `trm.review` tool to:
 
 ### Checkpoints and Undo
 
-**Prompt:** "Save the current state as a checkpoint called 'before-refactoring'."
+**Prompt:** *"Save the current state as a checkpoint called 'before-refactoring'."*
 
 Uses `trm.save` tool to save session state for later restoration.
 
-**Prompt:** "That last change made things worse. Undo it and restore the previous state."
+**Prompt:** *"That last change made things worse. Undo it and restore the previous state."*
 
 Uses `trm.undo` tool to:
 - Restore files to previous state
@@ -193,7 +193,7 @@ Uses `trm.undo` tool to:
 
 ### Example Complete Session
 
-**Prompt:** "Let's improve the data validation in my pandas project. Start a TRM session at /path/to/project with these settings:
+***Prompt:** "Let's improve the data validation in my pandas project. Start a TRM session at /path/to/project with these settings:
 - Data validation: python scripts/check_schemas.py
 - Tests: pytest --json tests/
 - Lint: flake8 src/ && mypy src/
@@ -202,11 +202,11 @@ Uses `trm.undo` tool to:
 
 **Response:** ✅ Session started with ID abc-123...
 
-**Prompt:** "Read src/validators.py so I can see what needs to be improved."
+**Prompt:** *"Read src/validators.py so I can see what needs to be improved."*
 
 **Response:** [Shows file contents with 250 lines]
 
-**Prompt:** "Submit a candidate that adds schema validation for the 'transactions' DataFrame. It should check that required columns exist and have correct dtypes."
+**Prompt:** *"Submit a candidate that adds schema validation for the 'transactions' DataFrame. It should check that required columns exist and have correct dtypes."*
 
 **Response:**
 - Step 1/12
@@ -215,7 +215,7 @@ Uses `trm.undo` tool to:
 - Data quality: ❌ Failed (schema mismatch detected)
 - Feedback: Add validation for 'amount' column dtype
 
-**Prompt:** "Fix the schema validation based on that feedback."
+**Prompt:** *"Fix the schema validation based on that feedback."*
 
 **Response:**
 - Step 2/12
@@ -224,7 +224,7 @@ Uses `trm.undo` tool to:
 - Data quality: ✅ Passed
 - Feedback: Remaining test failures in edge cases
 
-**Prompt:** "Keep iterating until tests pass or we should halt."
+**Prompt:** *"Keep iterating until tests pass or we should halt."*
 
 [System continues iterating with LLM proposals...]
 
