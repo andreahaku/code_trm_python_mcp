@@ -83,11 +83,11 @@ def _parse_traceback_block(block: str) -> Optional[PythonError]:
     if "Traceback (most recent call last):" not in block:
         return None
 
-    lines = block.strip().split("\\n")
+    lines = block.strip().split("\n")
 
     # Find the error type and message (usually the last line)
     error_line = lines[-1] if lines else ""
-    error_match = re.match(r"(\\w+(?:Error|Exception|Warning)):\\s*(.*)", error_line)
+    error_match = re.match(r"(\w+(?:Error|Exception|Warning)):\s*(.*)", error_line)
 
     if not error_match:
         return None
@@ -103,7 +103,7 @@ def _parse_traceback_block(block: str) -> Optional[PythonError]:
     # Look for file references in traceback
     # Format: File "/path/to/file.py", line 123, in function_name
     for line in lines:
-        file_match = re.search(r'File "([^"]+)",\\s*line\\s*(\\d+)', line)
+        file_match = re.search(r'File "([^"]+)",\s*line\s*(\d+)', line)
         if file_match:
             file_path = file_match.group(1)
             line_number = int(file_match.group(2))
@@ -131,12 +131,12 @@ def _parse_standalone_errors(text: str) -> List[PythonError]:
     - file.py:123:45: E501 line too long
     """
     errors = []
-    lines = text.strip().split("\\n")
+    lines = text.strip().split("\n")
 
     for line in lines:
         # Pattern: file.py:line:col: error_type message
         match = re.match(
-            r"^(.+?):(\\d+)(?::(\\d+))?:\\s*(?:([A-Z]\\d+)\\s+)?(.+)$",
+            r"^(.+?):(\d+)(?::(\d+))?:\s*(?:([A-Z]\d+)\s+)?(.+)$",
             line
         )
         if match:
@@ -255,4 +255,4 @@ def format_error_for_llm(error: PythonError) -> str:
     if suggestion:
         parts.append(f"💡 Suggestion: {suggestion}")
 
-    return "\\n".join(parts)
+    return "\n".join(parts)

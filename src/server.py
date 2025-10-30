@@ -86,7 +86,7 @@ async def handle_start_session(args: dict) -> list[TextContent]:
         weights = WeightsConfig(**args["weights"])
 
     # Create halt config
-    halt = HaltConfig(**args["halt"])
+    halt_config = HaltConfig(**args["halt"])
 
     # Create session
     session = create_session(
@@ -97,7 +97,7 @@ async def handle_start_session(args: dict) -> list[TextContent]:
         perf_cmd=args.get("perf_cmd"),
         timeout_sec=args.get("timeout_sec", 120),
         weights=weights,
-        halt=halt.__dict__,
+        halt=halt_config,
         ema_alpha=args.get("ema_alpha", 0.9),
         z_notes=args.get("z_notes"),
         mode=SessionMode.CUMULATIVE,

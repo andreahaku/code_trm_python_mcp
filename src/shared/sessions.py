@@ -29,7 +29,7 @@ def create_session(
     perf_cmd: Optional[str],
     timeout_sec: int,
     weights: Optional[WeightsConfig],
-    halt: dict,
+    halt,  # Can be dict or HaltConfig
     ema_alpha: float,
     z_notes: Optional[str],
     mode: SessionMode = SessionMode.CUMULATIVE,
@@ -45,7 +45,7 @@ def create_session(
         perf_cmd: Command for performance benchmarking
         timeout_sec: Timeout for commands
         weights: Evaluation weights
-        halt: Halting policy configuration
+        halt: Halting policy configuration (dict or HaltConfig)
         ema_alpha: EMA smoothing factor
         z_notes: Initial reasoning notes
         mode: Session mode (cumulative/snapshot)
@@ -53,7 +53,13 @@ def create_session(
     Returns:
         New SessionState
     """
+    from ..types import HaltConfig
+
     session_id = str(uuid.uuid4())
+
+    # Convert halt to HaltConfig if needed
+    if isinstance(halt, dict):
+        halt = HaltConfig(**halt)
 
     # Create configuration
     config = SessionConfig(
