@@ -11,7 +11,7 @@ requires-python = ">=3.10"
 license = {text = "MIT"}
 keywords = ["mcp", "trm", "code-refinement", "llm", "testing", "data-analysis", "python"]
 authors = [
-    {name = "Andrea Salvatore", email = "andrea@example.com"}
+    {name = "Andrea Salvatore", email = "andreahaku@gmail.com"}
 ]
 
 dependencies = [
